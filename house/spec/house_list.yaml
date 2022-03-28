@@ -1,0 +1,135 @@
+List - 依傳入參數一次撈取全部資料
+---
+parameters:
+  - name: page
+    in: query
+    type: integer
+    required: true
+  - name: region
+    in: query
+    type: string
+    enum: ['台北市', '新北市']
+    required: false
+  - name: role_name
+    in: query
+    type: string
+    enum: ['屋主', '代理人', '仲介']
+    required: false
+  - name: im_gender
+    in: query
+    type: string
+    enum: ['先生', '女士']
+    required: false
+  - name: rule
+    in: query
+    type: array
+    items:
+      type: string
+      enum: ['限女生', '限男生', '不可養寵物', '不可開伙', '男女皆可租住']
+    required: false
+  - name: mobile
+    in: query
+    type: string
+    required: false
+
+
+responses:
+  200:
+    description: ''
+    schema:
+      required:
+        - total_pages
+        - results
+      type: object
+      properties:
+        total_pages:
+          type: integer
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              address:
+                type: string
+              closed:
+                type: integer
+              deposit:
+                type: string
+              floorStr:
+                type: string
+              imName:
+                type: string
+              kind_name:
+                type: string
+              layout:
+                type: string
+              linkman:
+                type: string
+              mobile:
+                type: string
+              post_id:
+                type: integer
+              price:
+                type: string
+              region_name:
+                type: string
+                enum: ["台北市", "新北市"]
+              regionid:
+                type: integer
+              role_name:
+                type: string
+                enum: ["屋主", "房東", "仲介"]
+              room_str:
+                type: string
+              rule:
+                type: string
+              section_name:
+                type: string
+              street_name:
+                type: string
+              unit:
+                type: string
+                default: 元/月
+
+examples:
+  application/json:
+    total_pages: 12
+    results:
+      - address: 內湖路一段323巷西湖市場..
+        closed: 0
+        deposit: 押金二個月
+        floorStr: 3F/5F
+        imName: 吳先生
+        kind_name: 分租套房
+        layout: ""
+        linkman: 王阿姨
+        mobile: 0931-287-385
+        post_id: 11597
+        price: 13,500
+        region_name: 台北市
+        regionid: 1
+        role_name: 屋主
+        room_str: ""
+        rule: 此房屋限女生租住，不可養寵物，不可開伙；適合上班族
+        section_name: 內湖區
+        street_name: 內湖路一段
+        unit: 元/月
+      - address: 新明路內湖套房近內科南科..
+        closed: 0
+        deposit: 押金二個月
+        floorStr: 2F/3F
+        imName: 林先生
+        kind_name: 獨立套房
+        layout: ""
+        linkman: 吳小姐
+        mobile: 0930-309-568
+        post_id: 882639
+        price: 15,000
+        region_name: 台北市
+        regionid: ""
+        role_name: 代理人
+        room_str: ""
+        rule: 此房屋男女皆可租住，不可養寵物，不可開伙；適合上班族
+        section_name: 內湖區
+        street_name: 新明路
+        unit: 元/月
