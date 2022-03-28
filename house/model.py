@@ -19,6 +19,7 @@ class House(db.Model):
     layout = db.Column(db.Text)
     floorStr = db.Column(db.Text)
     kind_name = db.Column(db.Text)
+    ltime = db.Column(db.DateTime)
 
     # 內容頁面API提供的欄位
     deposit = db.Column(db.Text)

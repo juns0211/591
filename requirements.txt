@@ -3,3 +3,4 @@ flask-swagger
 Flask-Migrate
 sqlalchemy
 python-dotenv
+flasgger

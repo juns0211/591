@@ -27,14 +27,15 @@ def get_json(url, params, session=session, headers=headers):
     return resp.json()
 
 
-def get_list(region, domain=domain, endpoints='/home/search/rsList', max_page=None):
+def get_list(region, domain=domain, endpoints='/home/search/rsList', early_break=True, max_page=None):
     '''取得指定region的清單'''
+    last_data = model.House.query.filter_by(regionid=region).order_by(model.House.ltime.desc()).first()
     total_page = max_page or 0
     result = {}
     page = 1
     # 迴圈抓取每一頁
     while page < total_page:
-        params = {'region': region, 'firstRow': (page-1)*30}
+        params = {'region': region, 'firstRow': (page-1)*30, 'order': 'posttime', 'orderType': 'desc'}
         data = get_json(domain+endpoints, params=params)
         # 抓取清單
         result = {**result, **{
@@ -54,10 +55,13 @@ def get_list(region, domain=domain, endpoints='/home/search/rsList', max_page=No
                     'layout': d['layout'],
                     'floorStr': d['floorStr'],
                     'kind_name': d['kind_name'],
+                    'ltime': d['ltime'],
                 } for d in data['data']['data']
             }
         }
-        
+        if early_break and last_data and last_data.post_id in result:
+            break
+
         # 讀取總頁數
         total_page = max_page or int(page.find('a.pageNext', first=True).attrs.get('data-total'))
         # 準備爬下一頁
@@ -97,7 +101,12 @@ if __name__ == '__main__':
     # 讀取[台北、新北]清單
     print('--- get_list ---')
     for region in [1, 3]:
-        lst_data = {**lst_data, **get_list(region, max_page=10)}
+        lst_data = {**lst_data, **get_list()}
+
+    # 排除已經存在於DB的資料
+    exists_data = model.House.query.filter(model.House.post_id._in(lst_data.keys())).all()
+    exists_data = [data.post_id for data in exists_data]
+    lst_data = {key: value for key, value in lst_data if key not in exists_data}
 
     # 逐一讀取詳細內容
     print('--- get_detail ---')
